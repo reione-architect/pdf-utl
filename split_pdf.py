@@ -1,4 +1,4 @@
-import PyPDF2
+from PyPDF2 import PdfReader, PdfWriter
 
 def split_pdf(input_pdf, start_page, end_page, output_pdf):
     # 1始まりのページ番号を0始まりに変換
@@ -6,22 +6,21 @@ def split_pdf(input_pdf, start_page, end_page, output_pdf):
     end_idx = end_page - 1  
 
     # PDFファイルを読み込み
-    with open(input_pdf, "rb") as pdf_file:
-        pdf_reader = PyPDF2.PdfFileReader(pdf_file)
-        pdf_writer = PyPDF2.PdfFileWriter()
+    pdf_reader = PdfReader(input_pdf)
+    pdf_writer = PdfWriter()
 
-        # 指定したページ範囲を追加（end_idx まで含む）
-        for page_num in range(start_idx, min(end_idx + 1, pdf_reader.numPages)):
-            pdf_writer.addPage(pdf_reader.getPage(page_num))
+    # 指定したページ範囲を追加（end_idx まで含む）
+    for page_num in range(start_idx, min(end_idx + 1, len(pdf_reader.pages))):
+        pdf_writer.add_page(pdf_reader.pages[page_num])
 
-        # 新しいPDFとして保存
-        with open(output_pdf, "wb") as output_file:
-            pdf_writer.write(output_file)
+    # 新しいPDFとして保存
+    with open(output_pdf, "wb") as output_file:
+        pdf_writer.write(output_file)
 
 # 使用例
-input_pdf = "input.pdf"
-output_pdf = "output_from_page_4_to_7.pdf"
-start_page = 4  # 4ページ目から開始（1始まり）
-end_page = 7    # 7ページ目まで（1始まり）
+input_pdf = "2023r05a_pm_pm1_qs.pdf"
+output_pdf = "2023r05a_pm_pm1_qs_2_to_6.pdf"
+start_page = 2  # 2ページ目から開始（1始まり）
+end_page = 6    # 6ページ目まで（1始まり）
 
 split_pdf(input_pdf, start_page, end_page, output_pdf)
